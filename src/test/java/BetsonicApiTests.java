@@ -145,4 +145,45 @@ public class BetsonicApiTests {
 
         assert responseObject.getResult().getCulture().equals("en-GB");
     }
+
+    @Test
+    @Description("Checking coupon values for not null values and type matching")
+    public void verifyFieldsAreNotNullAndInteger() {
+        RestAssured.baseURI = "https://sb2frontend-altenar2-stage.biahosted.com";
+        Response response = given()
+                .queryParam("timezoneOffset", "-180")
+                .queryParam("langId", "8")
+                .queryParam("skinName", "betsonic")
+                .queryParam("configId", "1")
+                .queryParam("culture", "en-GB")
+                .queryParam("countryCode", "RU")
+                .queryParam("deviceType", "Desktop")
+                .queryParam("numformat", "en")
+                .queryParam("integration", "skintest")
+                .queryParam("sportId", "66")
+                .queryParam("myLeagues", "")
+                .queryParam("maxOdd", "1.5")
+                .when()
+                .get("/api/Sportsbook/GetCouponMatchesCount")
+                .then()
+                .assertThat()
+                .statusCode(200)
+                .contentType("application/json")
+                .extract().response();
+
+        CouponsData.Example example = response.as(CouponsData.Example.class);
+        assert example.getResult().getToday() != null;
+        assert example.getResult().getTomorrow() != null;
+        assert example.getResult().getUpcoming() != null;
+        assert example.getResult().getMyLeagues() != null;
+        assert example.getResult().getWithMaxOdd() != null;
+        assert example.getResult().getTopLeagues() != null;
+
+        assert example.getResult().getToday() instanceof Integer;
+        assert example.getResult().getTomorrow() instanceof Integer;
+        assert example.getResult().getUpcoming() instanceof Integer;
+        assert example.getResult().getMyLeagues() instanceof Integer;
+        assert example.getResult().getWithMaxOdd() instanceof Integer;
+        assert example.getResult().getTopLeagues() instanceof Integer;
+    }
 }
