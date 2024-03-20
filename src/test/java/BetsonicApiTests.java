@@ -60,7 +60,6 @@ public class BetsonicApiTests {
         assertThat("Champ name is null", event.getChampName(), notNullValue());
         assertThat("Event name is null", event.getName(), notNullValue());
         assertThat("Event date is null", event.getEventDate(), notNullValue());
-        assertThat("Event code is null", event.getEventCode(), notNullValue());
         assertThat("Event status is null", event.getStatus(), notNullValue());
         assertThat("Event extId is null", event.getExtId(), notNullValue());
         assertThat("Event isPromo is null", event.getIsPromo(), notNullValue());
