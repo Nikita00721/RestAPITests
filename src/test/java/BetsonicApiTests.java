@@ -70,7 +70,8 @@ public class BetsonicApiTests {
     }
 
     @Test
-    public void getLiveEvents(){
+    @Description("Checking getting a list of live events")
+    public void getLiveEventsTest(){
             RestAssured.baseURI = "https://sb2frontend-altenar2-stage.biahosted.com";
             Response response = given()
                     .param("timezoneOffset", -180)
@@ -113,5 +114,35 @@ public class BetsonicApiTests {
             assertNotNull(item.order);
             assertNotNull(item.sportTypeId);
         }
+    }
+
+    @Test
+    @Description("Test for opening a website with the correct language settings")
+    public void verifyLanguageAndCultureTest() {
+        // Установка базового URI
+        RestAssured.baseURI = "https://sb2frontend-altenar2-stage.biahosted.com";
+
+        // Выполнение GET запроса и получение ответа
+        Response response = given()
+                .queryParam("timezoneOffset", "-180")
+                .queryParam("langId", "8")
+                .queryParam("skinName", "betsonic")
+                .queryParam("configId", "1")
+                .queryParam("culture", "en-GB")
+                .queryParam("deviceType", "Desktop")
+                .queryParam("numformat", "en")
+                .queryParam("integration", "skintest")
+                .when()
+                .get("/api/Translation/StaticTranslations")
+                .then()
+                .assertThat()
+                .statusCode(200)
+                .contentType("application/json")
+                .extract().response();
+
+
+        LanguageData.Response responseObject = response.as(LanguageData.Response.class);
+
+        assert responseObject.getResult().getCulture().equals("en-GB");
     }
 }
