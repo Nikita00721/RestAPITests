@@ -1,3 +1,4 @@
+import CouponsData.Coupons;
 import HighlightsData.*;
 import HighlightsData.Event;
 import HighlightsData.Item;
@@ -14,7 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BetsonicApiTests {
-
     @Test
     @Description("Receiving information about an event in the Highlights block and partially checking it")
     public void testHighlightsEvent() {
@@ -119,10 +119,8 @@ public class BetsonicApiTests {
     @Test
     @Description("Test for opening a website with the correct language settings")
     public void verifyLanguageAndCultureTest() {
-        // Установка базового URI
         RestAssured.baseURI = "https://sb2frontend-altenar2-stage.biahosted.com";
 
-        // Выполнение GET запроса и получение ответа
         Response response = given()
                 .queryParam("timezoneOffset", "-180")
                 .queryParam("langId", "8")
@@ -148,7 +146,7 @@ public class BetsonicApiTests {
 
     @Test
     @Description("Checking coupon values for not null values and type matching")
-    public void verifyFieldsAreNotNullAndInteger() {
+    public void verifyCouponsFieldsTest() {
         RestAssured.baseURI = "https://sb2frontend-altenar2-stage.biahosted.com";
         Response response = given()
                 .queryParam("timezoneOffset", "-180")
@@ -171,19 +169,20 @@ public class BetsonicApiTests {
                 .contentType("application/json")
                 .extract().response();
 
-        CouponsData.Example example = response.as(CouponsData.Example.class);
-        assert example.getResult().getToday() != null;
-        assert example.getResult().getTomorrow() != null;
-        assert example.getResult().getUpcoming() != null;
-        assert example.getResult().getMyLeagues() != null;
-        assert example.getResult().getWithMaxOdd() != null;
-        assert example.getResult().getTopLeagues() != null;
+        Coupons coupons = response.as(Coupons.class);
+        assert coupons.getResult().getToday() != null : "Today field is null";
+        assert coupons.getResult().getTomorrow() != null : "Tomorrow field is null";
+        assert coupons.getResult().getUpcoming() != null : "Upcoming field is null";
+        assert coupons.getResult().getMyLeagues() != null : "MyLeagues field is null";
+        assert coupons.getResult().getWithMaxOdd() != null : "WithMaxOdd field is null";
+        assert coupons.getResult().getTopLeagues() != null : "TopLeagues field is null";
 
-        assert example.getResult().getToday() instanceof Integer;
-        assert example.getResult().getTomorrow() instanceof Integer;
-        assert example.getResult().getUpcoming() instanceof Integer;
-        assert example.getResult().getMyLeagues() instanceof Integer;
-        assert example.getResult().getWithMaxOdd() instanceof Integer;
-        assert example.getResult().getTopLeagues() instanceof Integer;
+        assert coupons.getResult().getToday() instanceof Integer : "Today field is not an instance of Integer";
+        assert coupons.getResult().getTomorrow() instanceof Integer : "Tomorrow field is not an instance of Integer";
+        assert coupons.getResult().getUpcoming() instanceof Integer : "Upcoming field is not an instance of Integer";
+        assert coupons.getResult().getMyLeagues() instanceof Integer : "MyLeagues field is not an instance of Integer";
+        assert coupons.getResult().getWithMaxOdd() instanceof Integer : "WithMaxOdd field is not an instance of Integer";
+        assert coupons.getResult().getTopLeagues() instanceof Integer : "TopLeagues field is not an instance of Integer";
+
     }
 }

@@ -4,8 +4,6 @@ package CouponsData;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -23,7 +21,7 @@ import javax.annotation.processing.Generated;
 @Getter
 @Setter
 @Generated("jsonschema2pojo")
-public class Example {
+public class Coupons {
 
     @JsonProperty("Result")
     private Result result;
