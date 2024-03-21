@@ -21,8 +21,23 @@ public class BetsonicApiTests {
     public void testHighlightsEvent() {
         RestAssured.baseURI = "https://sb2frontend-altenar2-stage.biahosted.com";
 
-        Response response = given().param("timezoneOffset", -180).param("langId", 8).param("skinName", "betsonic").param("configId", 1).param("culture", "en-GB").param("countryCode", "RU").param("deviceType", "Desktop").param("numformat", "en").param("integration", "skintest").param("sportId", 66).param("showAllEvents", false).param("count", 10).when().get("/api/Sportsbook/GetHighlights").then().statusCode(200).extract().response();
-
+        Response response = given().param("timezoneOffset", -180)
+                .param("langId", 8)
+                .param("skinName", "betsonic")
+                .param("configId", 1)
+                .param("culture", "en-GB")
+                .param("countryCode", "RU")
+                .param("deviceType", "Desktop")
+                .param("numformat", "en")
+                .param("integration", "skintest")
+                .param("sportId", 66)
+                .param("showAllEvents", false)
+                .param("count", 10)
+                .when()
+                .get("/api/Sportsbook/GetHighlights")
+                .then()
+                .statusCode(200)
+                .extract().response();
 
         Highlights highlights = response.as(Highlights.class);
 
@@ -53,14 +68,36 @@ public class BetsonicApiTests {
         softAssertions.assertThat(event.getEventType()).as("Event eventType is null").isNotNull();
 
         softAssertions.assertAll();
-
     }
 
     @Test
     @Description("Checking getting a list of live events")
     public void getLiveEventsTest() {
         RestAssured.baseURI = "https://sb2frontend-altenar2-stage.biahosted.com";
-        Response response = given().param("timezoneOffset", -180).param("langId", 8).param("skinName", "betsonic").param("configId", 1).param("culture", "en-GB").param("countryCode", "RU").param("deviceType", "Desktop").param("numformat", "en").param("integration", "skintest").param("sportids", 66).param("categoryids", 0).param("champids", 0).param("group", "Championship").param("outrightsDisplay", "none").param("couponType", 0).param("marketGroupId", 0).param("filterSingleNodes", 2).param("hasLiveStream", false).when().get("/api/Sportsbook/GetLiveEvents").then().assertThat().statusCode(200).contentType("application/json").extract().response();
+        Response response = given()
+                .param("timezoneOffset", -180)
+                .param("langId", 8)
+                .param("skinName", "betsonic")
+                .param("configId", 1)
+                .param("culture", "en-GB")
+                .param("countryCode", "RU")
+                .param("deviceType", "Desktop")
+                .param("numformat", "en")
+                .param("integration", "skintest")
+                .param("sportids", 66)
+                .param("categoryids", 0)
+                .param("champids", 0)
+                .param("group", "Championship")
+                .param("outrightsDisplay", "none")
+                .param("couponType", 0)
+                .param("marketGroupId", 0)
+                .param("filterSingleNodes", 2)
+                .param("hasLiveStream", false)
+                .when().get("/api/Sportsbook/GetLiveEvents")
+                .then()
+                .assertThat().statusCode(200)
+                .contentType("application/json")
+                .extract().response();
 
         SoftAssertions softAssertions = new SoftAssertions();
 
@@ -86,7 +123,21 @@ public class BetsonicApiTests {
     @Description("Test for opening a website with the correct language settings")
     public void verifyLanguageAndCultureTest() {
         RestAssured.baseURI = "https://sb2frontend-altenar2-stage.biahosted.com";
-        Response response = given().queryParam("timezoneOffset", "-180").queryParam("langId", "8").queryParam("skinName", "betsonic").queryParam("configId", "1").queryParam("culture", "en-GB").queryParam("deviceType", "Desktop").queryParam("numformat", "en").queryParam("integration", "skintest").when().get("/api/Translation/StaticTranslations").then().assertThat().statusCode(200).contentType("application/json").extract().response();
+        Response response = given()
+                .queryParam("timezoneOffset", "-180")
+                .queryParam("langId", "8")
+                .queryParam("skinName", "betsonic")
+                .queryParam("configId", "1")
+                .queryParam("culture", "en-GB")
+                .queryParam("deviceType", "Desktop")
+                .queryParam("numformat", "en")
+                .queryParam("integration", "skintest")
+                .when()
+                .get("/api/Translation/StaticTranslations")
+                .then()
+                .assertThat().statusCode(200)
+                .contentType("application/json")
+                .extract().response();
         LanguageData.Response responseObject = response.as(LanguageData.Response.class);
         assert responseObject.getResult().getCulture().equals("en-GB");
     }
@@ -95,7 +146,25 @@ public class BetsonicApiTests {
     @Description("Checking coupon values for not null values and type matching")
     public void verifyCouponsFieldsTest() {
         RestAssured.baseURI = "https://sb2frontend-altenar2-stage.biahosted.com";
-        Response response = given().queryParam("timezoneOffset", "-180").queryParam("langId", "8").queryParam("skinName", "betsonic").queryParam("configId", "1").queryParam("culture", "en-GB").queryParam("countryCode", "RU").queryParam("deviceType", "Desktop").queryParam("numformat", "en").queryParam("integration", "skintest").queryParam("sportId", "66").queryParam("myLeagues", "").queryParam("maxOdd", "1.5").when().get("/api/Sportsbook/GetCouponMatchesCount").then().assertThat().statusCode(200).contentType("application/json").extract().response();
+        Response response = given()
+                .queryParam("timezoneOffset", "-180")
+                .queryParam("langId", "8")
+                .queryParam("skinName", "betsonic")
+                .queryParam("configId", "1")
+                .queryParam("culture", "en-GB")
+                .queryParam("countryCode", "RU")
+                .queryParam("deviceType", "Desktop")
+                .queryParam("numformat", "en")
+                .queryParam("integration", "skintest")
+                .queryParam("sportId", "66")
+                .queryParam("myLeagues", "")
+                .queryParam("maxOdd", "1.5")
+                .when()
+                .get("/api/Sportsbook/GetCouponMatchesCount")
+                .then()
+                .assertThat().statusCode(200)
+                .contentType("application/json")
+                .extract().response();
 
         Coupons coupons = response.as(Coupons.class);
         SoftAssertions softAssertions = new SoftAssertions();
@@ -116,5 +185,4 @@ public class BetsonicApiTests {
 
         softAssertions.assertAll();
     }
-}
 }
