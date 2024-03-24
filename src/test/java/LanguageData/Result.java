@@ -1,11 +1,11 @@
 package LanguageData;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 public class Result {
 
     @JsonProperty("CombinationTricast")
@@ -647,7 +647,7 @@ public class Result {
     @JsonProperty("Sportsbook Report")
     private String sportsbookReport;
 
-    @JsonProperty("No data found")
+    @JsonProperty("No datas found")
     private String noDataFound;
 
     @JsonProperty("My markets")
@@ -1457,7 +1457,7 @@ public class Result {
     @JsonProperty("LotteryDraw")
     private String lotteryDraw;
 
-    @JsonProperty("No betting data")
+    @JsonProperty("No betting datas")
     private String noBettingData;
 
     @JsonProperty("Agency")

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,8 +25,7 @@ import javax.annotation.processing.Generated;
     "Name",
     "HighlightsData.SpecOdd"
 })
-@Getter
-@Setter
+@Data
 @Generated("jsonschema2pojo")
 public class Header {
 

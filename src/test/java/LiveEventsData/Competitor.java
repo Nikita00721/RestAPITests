@@ -10,8 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -19,8 +18,7 @@ import lombok.Setter;
     "Name",
     "Order"
 })
-@Getter
-@Setter
+@Data
 @Generated("jsonschema2pojo")
 public class Competitor {
 
