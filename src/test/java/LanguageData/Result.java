@@ -647,7 +647,7 @@ public class Result {
     @JsonProperty("Sportsbook Report")
     private String sportsbookReport;
 
-    @JsonProperty("No datas found")
+    @JsonProperty("No data found")
     private String noDataFound;
 
     @JsonProperty("My markets")
@@ -1457,7 +1457,7 @@ public class Result {
     @JsonProperty("LotteryDraw")
     private String lotteryDraw;
 
-    @JsonProperty("No betting datas")
+    @JsonProperty("No betting data")
     private String noBettingData;
 
     @JsonProperty("Agency")

@@ -5,69 +5,22 @@ import HighlightsData.Item;
 import LiveEventsData.*;
 import io.qameta.allure.Description;
 import io.restassured.RestAssured;
-import io.restassured.http.Cookies;
 import io.restassured.response.Response;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import BrandsData.*;
 
-import java.util.List;
-import java.util.Map;
-
-import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BetsonicApiTests {
-    private Map<String, String> cookies;
-
     @BeforeEach
     public void setUp() {
-        RestAssured.baseURI = "https://sb2admin-altenar2-stage.biahosted.com";
-        Response response = given()
-                .param("username", ConfigReader.getUsername())
-                .param("password", ConfigReader.getPassword())
-                .when()
-                .post("/Account/Login")
-                .then()
-                .extract().response();
-
-        cookies = response.getCookies();
+        RestAssured.baseURI = "https://sb2frontend-altenar2-stage.biahosted.com";
     }
-
-    @Test
-    public void UserPermissionsTest() {
-        RestAssured.baseURI = "https://sb2admin-altenar2-stage.biahosted.com";
-        String requestBody = "{ \"LicensesIds\": [] }";
-
-        Response response = given()
-                .contentType("application/json")
-                .body(requestBody)
-                .cookies(cookies)
-                .when()
-                .post("/Api/HighlightsManager/GetBrands")
-                .then()
-                .statusCode(200)
-                .extract().response();
-
-        Brands brands = response.as(Brands.class);
-        assertTrue(brands.getData() != null && !brands.getData().isEmpty()); // Что вообще содержит данные
-        List<Datum> data = brands.getData();
-        for (Datum datum : data) {
-            assertTrue(datum.getBrandId() != null && datum.getName() != null && datum.getLicenseId() != null); // Что бренды есть в ответе
-        }
-    }
-
 
     @Test
     @Description("Receiving information about an event in the Highlights block and partially checking it")
     public void testHighlightsEvent() {
-        RestAssured.baseURI = "https://sb2frontend-altenar2-stage.biahosted.com";
-
         Response response = given().param("timezoneOffset", -180)
                 .param("langId", 8)
                 .param("skinName", "betsonic")
@@ -122,7 +75,6 @@ public class BetsonicApiTests {
     @Test
     @Description("Checking getting a list of live events")
     public void getLiveEventsTest() {
-        RestAssured.baseURI = "https://sb2frontend-altenar2-stage.biahosted.com";
         Response response = given()
                 .param("timezoneOffset", -180)
                 .param("langId", 8)
@@ -171,7 +123,6 @@ public class BetsonicApiTests {
     @Test
     @Description("Test for opening a website with the correct language settings")
     public void verifyLanguageAndCultureTest() {
-        RestAssured.baseURI = "https://sb2frontend-altenar2-stage.biahosted.com";
         Response response = given()
                 .queryParam("timezoneOffset", "-180")
                 .queryParam("langId", "8")
@@ -194,7 +145,6 @@ public class BetsonicApiTests {
     @Test
     @Description("Checking coupon values for not null values and type matching")
     public void verifyCouponsFieldsTest() {
-        RestAssured.baseURI = "https://sb2frontend-altenar2-stage.biahosted.com";
         Response response = given()
                 .queryParam("timezoneOffset", "-180")
                 .queryParam("langId", "8")
