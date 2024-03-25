@@ -13,7 +13,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.annotation.processing.Generated;
+import javax.annotation.Generated;
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

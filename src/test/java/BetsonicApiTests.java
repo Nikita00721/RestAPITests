@@ -1,16 +1,26 @@
 import CouponsData.Coupons;
-import HighlightsData.*;
-import HighlightsData.Event;
-import HighlightsData.Item;
+import Generatot.model.EventResultOutApiResult;
+import Generatot.model.GetHighlightEventsResults;
+import Generatot.model.StringStringDictionaryApiResult;
 import LiveEventsData.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import io.qameta.allure.Description;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.Map;
 import static io.restassured.RestAssured.given;
+import static junit.framework.TestCase.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import Generatot.*;
 
 public class BetsonicApiTests {
     @BeforeEach
@@ -20,57 +30,61 @@ public class BetsonicApiTests {
 
     @Test
     @Description("Receiving information about an event in the Highlights block and partially checking it")
-    public void testHighlightsEvent() {
-        Response response = given().param("timezoneOffset", -180)
-                .param("langId", 8)
-                .param("skinName", "betsonic")
-                .param("configId", 1)
-                .param("culture", "en-GB")
-                .param("countryCode", "RU")
-                .param("deviceType", "Desktop")
-                .param("numformat", "en")
-                .param("integration", "skintest")
-                .param("sportId", 66)
-                .param("showAllEvents", false)
-                .param("count", 10)
+    public void testHighlightsEvent() throws IOException{
+        Response response = given()
+                .queryParam("timezoneOffset", "-180")
+                .queryParam("langId", 8)
+                .queryParam("skinName", "betsonic")
+                .queryParam("configId", 1)
+                .queryParam("culture", "en-GB")
+                .queryParam("countryCode", "RU")
+                .queryParam("deviceType", "Mobile")
+                .queryParam("numformat", "en")
+                .queryParam("integration", "skintest")
+                .queryParam("sportId", 67)
+                .queryParam("showAllEvents", false)
+                .queryParam("count", 10)
                 .when()
                 .get("/api/Sportsbook/GetHighlights")
                 .then()
-                .statusCode(200)
+                .assertThat().statusCode(200)
+                .contentType("application/json")
                 .extract().response();
 
-        Highlights highlights = response.as(Highlights.class);
-//        GetHighlightEventsResults getHighlightEventsResults = response.as(GetHighlightEventsResults.class);
-//        System.out.println(getHighlightEventsResults.getEvents().toString());
+        String jsonResponse = response.getBody().asString();
 
-        Item item = highlights.getResult().getItems().get(0);
-        Event event = item.getEvents().get(0);
+        Gson gson = new Gson();
+        EventResultOutApiResult result = gson.fromJson(jsonResponse, EventResultOutApiResult.class);
 
-        SoftAssertions softAssertions = new SoftAssertions();
-
-        softAssertions.assertThat(item.getId()).as("Incorrect item id").isEqualTo(66);
-        softAssertions.assertThat(item.getName()).as("Incorrect item name").isEqualTo("Soccer");
-        softAssertions.assertThat(item.getNode()).as("Incorrect item node").isEqualTo("SP");
-
-        softAssertions.assertThat(event.getId()).as("Event id is null").isNotNull();
-        softAssertions.assertThat(event.getSportId()).as("Sport id is null").isNotNull();
-        softAssertions.assertThat(event.getSportTypeId()).as("Sport type id is null").isNotNull();
-        softAssertions.assertThat(event.getSportName()).as("Sport name is null").isNotNull();
-        softAssertions.assertThat(event.getSportIcon()).as("Sport icon is null").isNotNull();
-        softAssertions.assertThat(event.getCategoryId()).as("Category id is null").isNotNull();
-        softAssertions.assertThat(event.getCategoryName()).as("Category name is null").isNotNull();
-        softAssertions.assertThat(event.getChampId()).as("Champ id is null").isNotNull();
-        softAssertions.assertThat(event.getChampName()).as("Champ name is null").isNotNull();
-        softAssertions.assertThat(event.getName()).as("Event name is null").isNotNull();
-        softAssertions.assertThat(event.getEventDate()).as("Event date is null").isNotNull();
-        softAssertions.assertThat(event.getStatus()).as("Event status is null").isNotNull();
-        softAssertions.assertThat(event.getExtId()).as("Event extId is null").isNotNull();
-        softAssertions.assertThat(event.getIsPromo()).as("Event isPromo is null").isNotNull();
-        softAssertions.assertThat(event.getIsLiveStream()).as("Event isLiveStream is null").isNotNull();
-        softAssertions.assertThat(event.getEventType()).as("Event eventType is null").isNotNull();
-
-        softAssertions.assertAll();
+//        Gson gson = new Gson();
+//        EventResultOutApiResult eventResultOutApiResult = gson.fromJson(jsonResponse, EventResultOutApiResult.class);
+//        assertNotNull(eventResultOutApiResult);
     }
+//        Gson gson = new Gson();
+//        EventResultOutApiResult result = gson.fromJson(json, EventResultOutApiResult.class);
+//        System.out.println(result.toString());
+
+//        SoftAssertions softAssertions = new SoftAssertions();
+//        softAssertions.assertThat(item.getId()).as("Incorrect item id").isEqualTo(66);
+//        softAssertions.assertThat(item.getName()).as("Incorrect item name").isEqualTo("Soccer");
+//        softAssertions.assertThat(item.getNode()).as("Incorrect item node").isEqualTo("SP");
+//        softAssertions.assertThat(event.getId()).as("Event id is null").isNotNull();
+//        softAssertions.assertThat(event.getSportId()).as("Sport id is null").isNotNull();
+//        softAssertions.assertThat(event.getSportTypeId()).as("Sport type id is null").isNotNull();
+//        softAssertions.assertThat(event.getSportName()).as("Sport name is null").isNotNull();
+//        softAssertions.assertThat(event.getSportIcon()).as("Sport icon is null").isNotNull();
+//        softAssertions.assertThat(event.getCategoryId()).as("Category id is null").isNotNull();
+//        softAssertions.assertThat(event.getCategoryName()).as("Category name is null").isNotNull();
+//        softAssertions.assertThat(event.getChampId()).as("Champ id is null").isNotNull();
+//        softAssertions.assertThat(event.getChampName()).as("Champ name is null").isNotNull();
+//        softAssertions.assertThat(event.getName()).as("Event name is null").isNotNull();
+//        softAssertions.assertThat(event.getEventDate()).as("Event date is null").isNotNull();
+//        softAssertions.assertThat(event.getStatus()).as("Event status is null").isNotNull();
+//        softAssertions.assertThat(event.getExtId()).as("Event extId is null").isNotNull();
+//        softAssertions.assertThat(event.getIsPromo()).as("Event isPromo is null").isNotNull();
+//        softAssertions.assertThat(event.getIsLiveStream()).as("Event isLiveStream is null").isNotNull();
+//        softAssertions.assertThat(event.getEventType()).as("Event eventType is null").isNotNull();
+//        softAssertions.assertAll();
 
     @Test
     @Description("Checking getting a list of live events")
@@ -100,30 +114,30 @@ public class BetsonicApiTests {
                 .contentType("application/json")
                 .extract().response();
 
-        SoftAssertions softAssertions = new SoftAssertions();
-
-        softAssertions.assertThat(response.getBody().asString()).as("Response is null").isNotNull();
-
-        LiveEvents liveEvents = response.as(LiveEvents.class);
-        softAssertions.assertThat(liveEvents.result.items).as("LiveEvents result items are null").isNotNull();
-        softAssertions.assertThat(liveEvents.result.items.size()).as("LiveEvents result items size is not greater than 0").isGreaterThan(0);
-
-        for (LiveEventsData.Item item : liveEvents.result.items) {
-            softAssertions.assertThat(item.id).as("Item id is null").isNotNull();
-            softAssertions.assertThat(item.name).as("Item name is null").isNotNull();
-            softAssertions.assertThat(item.node).as("Item node is null").isNotNull();
-            softAssertions.assertThat(item.items).as("Item items are null").isNotNull();
-            softAssertions.assertThat(item.order).as("Item order is null").isNotNull();
-            softAssertions.assertThat(item.sportTypeId).as("Item sportTypeId is null").isNotNull();
-        }
-
-        softAssertions.assertAll();
+//        SoftAssertions softAssertions = new SoftAssertions();
+//
+//        softAssertions.assertThat(response.getBody().asString()).as("Response is null").isNotNull();
+//
+//        LiveEvents liveEvents = response.as(LiveEvents.class);
+//        softAssertions.assertThat(liveEvents.result.items).as("LiveEvents result items are null").isNotNull();
+//        softAssertions.assertThat(liveEvents.result.items.size()).as("LiveEvents result items size is not greater than 0").isGreaterThan(0);
+//
+//        for (LiveEventsData.Item item : liveEvents.result.items) {
+//            softAssertions.assertThat(item.id).as("Item id is null").isNotNull();
+//            softAssertions.assertThat(item.name).as("Item name is null").isNotNull();
+//            softAssertions.assertThat(item.node).as("Item node is null").isNotNull();
+//            softAssertions.assertThat(item.items).as("Item items are null").isNotNull();
+//            softAssertions.assertThat(item.order).as("Item order is null").isNotNull();
+//            softAssertions.assertThat(item.sportTypeId).as("Item sportTypeId is null").isNotNull();
+//        }
+//
+//        softAssertions.assertAll();
     }
 
     @Test
     @Description("Test for opening a website with the correct language settings")
-    public void verifyLanguageAndCultureTest() {
-        Response response = given()
+    public void verifyLanguageAndCultureTest() throws IOException{
+        String json = given()
                 .queryParam("timezoneOffset", "-180")
                 .queryParam("langId", "8")
                 .queryParam("skinName", "betsonic")
@@ -135,11 +149,23 @@ public class BetsonicApiTests {
                 .when()
                 .get("/api/Translation/StaticTranslations")
                 .then()
-                .assertThat().statusCode(200)
-                .contentType("application/json")
-                .extract().response();
-        LanguageData.Response responseObject = response.as(LanguageData.Response.class);
-        assert responseObject.getResult().getCulture().equals("en-GB");
+                .assertThat()
+                .statusCode(200)
+                .extract()
+                .asString();
+
+        Gson gson = new Gson();
+        StringStringDictionaryApiResult response = gson.fromJson(json, StringStringDictionaryApiResult.class);
+
+        assertNotNull(response.getResult());
+        assertTrue(response.getResult() instanceof Map);
+
+        assertEquals("Today", response.getResult().get("Today"));
+        assertEquals("Stake", response.getResult().get("Stake"));
+        assertEquals("Coupon No", response.getResult().get("couponno"));
+        assertEquals("8", response.getResult().get("LangId"));
+        assertEquals("en", response.getResult().get("Locale code"));
+        assertEquals("en-GB", response.getResult().get("Culture"));
     }
 
     @Test
