@@ -1,17 +1,19 @@
-import BrandsData.Brands;
-import BrandsData.Datum;
-import LicenseData.License;
+import BackofficeGenerator.model.BrandListItem;
+import BackofficeGenerator.model.BrandListItemListApiResult;
+import BackofficeGenerator.model.LicenseListItemListApiResult;
+import com.google.gson.Gson;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import junit.framework.TestCase;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
+import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -45,11 +47,16 @@ public class BackofficeTests {
                 .statusCode(200)
                 .extract().response();
 
-        Brands brands = response.as(Brands.class);
-        assertTrue(brands.getData() != null && !brands.getData().isEmpty()); // Что вообще содержит данные
-        List<Datum> data = brands.getData();
-        for (Datum datum : data) {
-            assertTrue(datum.getBrandId() != null && datum.getName() != null && datum.getLicenseId() != null); // Что бренды есть в ответе
+        Gson gson = new Gson();
+        String jsonResponse = response.getBody().asString();
+        BrandListItemListApiResult brandListItemListApiResult = gson.fromJson(jsonResponse, BrandListItemListApiResult.class);
+
+        assertNotNull(brandListItemListApiResult.getData());
+        TestCase.assertTrue(brandListItemListApiResult.getData() instanceof List);
+
+        List<BrandListItem> data = brandListItemListApiResult.getData();
+        for (BrandListItem datum : data) {
+            assertTrue(datum.getBrandId() != null && datum.getName() != null && datum.getLicenseId() != null);
         }
     }
 
@@ -64,13 +71,17 @@ public class BackofficeTests {
                 .contentType("application/json")
                 .extract().response();
 
-        License license = response.as(License.class);
-        SoftAssertions softly = new SoftAssertions();
-        softly.assertThat(license.getData()).as("Data is not null").isNotNull();
-        softly.assertThat(license.getSuccess()).as("Success is true").isTrue();
-        softly.assertThat(license.getError()).as("Error is null").isNull();
+        Gson gson = new Gson();
+        String jsonResponse = response.getBody().asString();
+        LicenseListItemListApiResult licenseListItemListApiResult = gson.fromJson(jsonResponse, LicenseListItemListApiResult.class);
 
-        softly.assertAll();
+        SoftAssertions softAssertions = new SoftAssertions();
+
+        softAssertions.assertThat(licenseListItemListApiResult.getData()).as("Data is not null").isNotNull();
+        softAssertions.assertThat(licenseListItemListApiResult.getSuccess()).as("Success is true").isTrue();
+        softAssertions.assertThat(licenseListItemListApiResult.getError()).as("Error is null").isNull();
+
+        softAssertions.assertAll();
     }
 
     @Test
