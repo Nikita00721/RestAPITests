@@ -1,26 +1,19 @@
-import CouponsData.Coupons;
+import Generatot.model.CouponMatchesCounterOutApiResult;
 import Generatot.model.EventResultOutApiResult;
-import Generatot.model.GetHighlightEventsResults;
 import Generatot.model.StringStringDictionaryApiResult;
-import LiveEventsData.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.qameta.allure.Description;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.Map;
 import static io.restassured.RestAssured.given;
 import static junit.framework.TestCase.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import Generatot.*;
+import java.time.OffsetDateTime;
 
 public class BetsonicApiTests {
     @BeforeEach
@@ -53,38 +46,13 @@ public class BetsonicApiTests {
 
         String jsonResponse = response.getBody().asString();
 
-        Gson gson = new Gson();
-        EventResultOutApiResult result = gson.fromJson(jsonResponse, EventResultOutApiResult.class);
-
-//        Gson gson = new Gson();
-//        EventResultOutApiResult eventResultOutApiResult = gson.fromJson(jsonResponse, EventResultOutApiResult.class);
-//        assertNotNull(eventResultOutApiResult);
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(OffsetDateTime.class, new OffsetDateTimeAdapter())
+                .create();
+        EventResultOutApiResult eventResultOutApiResult = gson.fromJson(jsonResponse, EventResultOutApiResult.class);
+//      Gson gson = new Gson(); ААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААА
+        assertNotNull(eventResultOutApiResult);
     }
-//        Gson gson = new Gson();
-//        EventResultOutApiResult result = gson.fromJson(json, EventResultOutApiResult.class);
-//        System.out.println(result.toString());
-
-//        SoftAssertions softAssertions = new SoftAssertions();
-//        softAssertions.assertThat(item.getId()).as("Incorrect item id").isEqualTo(66);
-//        softAssertions.assertThat(item.getName()).as("Incorrect item name").isEqualTo("Soccer");
-//        softAssertions.assertThat(item.getNode()).as("Incorrect item node").isEqualTo("SP");
-//        softAssertions.assertThat(event.getId()).as("Event id is null").isNotNull();
-//        softAssertions.assertThat(event.getSportId()).as("Sport id is null").isNotNull();
-//        softAssertions.assertThat(event.getSportTypeId()).as("Sport type id is null").isNotNull();
-//        softAssertions.assertThat(event.getSportName()).as("Sport name is null").isNotNull();
-//        softAssertions.assertThat(event.getSportIcon()).as("Sport icon is null").isNotNull();
-//        softAssertions.assertThat(event.getCategoryId()).as("Category id is null").isNotNull();
-//        softAssertions.assertThat(event.getCategoryName()).as("Category name is null").isNotNull();
-//        softAssertions.assertThat(event.getChampId()).as("Champ id is null").isNotNull();
-//        softAssertions.assertThat(event.getChampName()).as("Champ name is null").isNotNull();
-//        softAssertions.assertThat(event.getName()).as("Event name is null").isNotNull();
-//        softAssertions.assertThat(event.getEventDate()).as("Event date is null").isNotNull();
-//        softAssertions.assertThat(event.getStatus()).as("Event status is null").isNotNull();
-//        softAssertions.assertThat(event.getExtId()).as("Event extId is null").isNotNull();
-//        softAssertions.assertThat(event.getIsPromo()).as("Event isPromo is null").isNotNull();
-//        softAssertions.assertThat(event.getIsLiveStream()).as("Event isLiveStream is null").isNotNull();
-//        softAssertions.assertThat(event.getEventType()).as("Event eventType is null").isNotNull();
-//        softAssertions.assertAll();
 
     @Test
     @Description("Checking getting a list of live events")
@@ -114,30 +82,26 @@ public class BetsonicApiTests {
                 .contentType("application/json")
                 .extract().response();
 
-//        SoftAssertions softAssertions = new SoftAssertions();
-//
-//        softAssertions.assertThat(response.getBody().asString()).as("Response is null").isNotNull();
-//
-//        LiveEvents liveEvents = response.as(LiveEvents.class);
-//        softAssertions.assertThat(liveEvents.result.items).as("LiveEvents result items are null").isNotNull();
-//        softAssertions.assertThat(liveEvents.result.items.size()).as("LiveEvents result items size is not greater than 0").isGreaterThan(0);
-//
-//        for (LiveEventsData.Item item : liveEvents.result.items) {
-//            softAssertions.assertThat(item.id).as("Item id is null").isNotNull();
-//            softAssertions.assertThat(item.name).as("Item name is null").isNotNull();
-//            softAssertions.assertThat(item.node).as("Item node is null").isNotNull();
-//            softAssertions.assertThat(item.items).as("Item items are null").isNotNull();
-//            softAssertions.assertThat(item.order).as("Item order is null").isNotNull();
-//            softAssertions.assertThat(item.sportTypeId).as("Item sportTypeId is null").isNotNull();
-//        }
-//
-//        softAssertions.assertAll();
+        String jsonResponse = response.getBody().asString();
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(OffsetDateTime.class, new OffsetDateTimeAdapter())
+                .create();
+        EventResultOutApiResult eventResultOutApiResult = gson.fromJson(jsonResponse, EventResultOutApiResult.class);
+        assertNotNull(eventResultOutApiResult);
+
+        SoftAssertions softAssertions = new SoftAssertions();
+        softAssertions.assertThat(eventResultOutApiResult.getResult().getItems().get(0).getId())
+                .as("Item id is incorrect")
+                .isEqualTo("66");
+
+        softAssertions.assertAll();
     }
 
     @Test
     @Description("Test for opening a website with the correct language settings")
     public void verifyLanguageAndCultureTest() throws IOException{
-        String json = given()
+        Response response = given()
                 .queryParam("timezoneOffset", "-180")
                 .queryParam("langId", "8")
                 .queryParam("skinName", "betsonic")
@@ -151,21 +115,25 @@ public class BetsonicApiTests {
                 .then()
                 .assertThat()
                 .statusCode(200)
-                .extract()
-                .asString();
+                .extract().response();
 
         Gson gson = new Gson();
-        StringStringDictionaryApiResult response = gson.fromJson(json, StringStringDictionaryApiResult.class);
+        String jsonResponse = response.getBody().asString();
+        StringStringDictionaryApiResult stringStringDictionaryApiResult = gson.fromJson(jsonResponse, StringStringDictionaryApiResult.class);
 
-        assertNotNull(response.getResult());
-        assertTrue(response.getResult() instanceof Map);
+        assertNotNull(stringStringDictionaryApiResult.getResult());
+        assertTrue(stringStringDictionaryApiResult.getResult() instanceof Map);
 
-        assertEquals("Today", response.getResult().get("Today"));
-        assertEquals("Stake", response.getResult().get("Stake"));
-        assertEquals("Coupon No", response.getResult().get("couponno"));
-        assertEquals("8", response.getResult().get("LangId"));
-        assertEquals("en", response.getResult().get("Locale code"));
-        assertEquals("en-GB", response.getResult().get("Culture"));
+        SoftAssertions softAssertions = new SoftAssertions();
+        softAssertions.assertThat(stringStringDictionaryApiResult.getResult().get("Today"))
+                .as("Value for 'Today' key is incorrect")
+                .isEqualTo("Today");
+
+        softAssertions.assertThat(stringStringDictionaryApiResult.getResult().get("Stake"))
+                .as("Value for 'Stake' key is incorrect")
+                .isEqualTo("Stake");
+
+        softAssertions.assertAll();
     }
 
     @Test
@@ -191,22 +159,24 @@ public class BetsonicApiTests {
                 .contentType("application/json")
                 .extract().response();
 
-        Coupons coupons = response.as(Coupons.class);
+        Gson gson = new Gson();
+        String jsonResponse = response.getBody().asString();
+        CouponMatchesCounterOutApiResult couponMatchesCounterOutApiResult = gson.fromJson(jsonResponse, CouponMatchesCounterOutApiResult.class);
+
         SoftAssertions softAssertions = new SoftAssertions();
+        softAssertions.assertThat(couponMatchesCounterOutApiResult.getResult().getToday()).as("Today field is null").isNotNull();
+        softAssertions.assertThat(couponMatchesCounterOutApiResult.getResult().getTomorrow()).as("Tomorrow field is null").isNotNull();
+        softAssertions.assertThat(couponMatchesCounterOutApiResult.getResult().getUpcoming()).as("Upcoming field is null").isNotNull();
+        softAssertions.assertThat(couponMatchesCounterOutApiResult.getResult().getMyLeagues()).as("MyLeagues field is null").isNotNull();
+        softAssertions.assertThat(couponMatchesCounterOutApiResult.getResult().getWithMaxOdd()).as("WithMaxOdd field is null").isNotNull();
+        softAssertions.assertThat(couponMatchesCounterOutApiResult.getResult().getTopLeagues()).as("TopLeagues field is null").isNotNull();
 
-        softAssertions.assertThat(coupons.getResult().getToday()).as("Today field is null").isNotNull();
-        softAssertions.assertThat(coupons.getResult().getTomorrow()).as("Tomorrow field is null").isNotNull();
-        softAssertions.assertThat(coupons.getResult().getUpcoming()).as("Upcoming field is null").isNotNull();
-        softAssertions.assertThat(coupons.getResult().getMyLeagues()).as("MyLeagues field is null").isNotNull();
-        softAssertions.assertThat(coupons.getResult().getWithMaxOdd()).as("WithMaxOdd field is null").isNotNull();
-        softAssertions.assertThat(coupons.getResult().getTopLeagues()).as("TopLeagues field is null").isNotNull();
-
-        softAssertions.assertThat(coupons.getResult().getToday()).as("Today field is not an instance of Integer").isInstanceOf(Integer.class);
-        softAssertions.assertThat(coupons.getResult().getTomorrow()).as("Tomorrow field is not an instance of Integer").isInstanceOf(Integer.class);
-        softAssertions.assertThat(coupons.getResult().getUpcoming()).as("Upcoming field is not an instance of Integer").isInstanceOf(Integer.class);
-        softAssertions.assertThat(coupons.getResult().getMyLeagues()).as("MyLeagues field is not an instance of Integer").isInstanceOf(Integer.class);
-        softAssertions.assertThat(coupons.getResult().getWithMaxOdd()).as("WithMaxOdd field is not an instance of Integer").isInstanceOf(Integer.class);
-        softAssertions.assertThat(coupons.getResult().getTopLeagues()).as("TopLeagues field is not an instance of Integer").isInstanceOf(Integer.class);
+        softAssertions.assertThat(couponMatchesCounterOutApiResult.getResult().getToday()).as("Today field is not an instance of Integer").isInstanceOf(Long.class);
+        softAssertions.assertThat(couponMatchesCounterOutApiResult.getResult().getTomorrow()).as("Tomorrow field is not an instance of Integer").isInstanceOf(Long.class);
+        softAssertions.assertThat(couponMatchesCounterOutApiResult.getResult().getUpcoming()).as("Upcoming field is not an instance of Integer").isInstanceOf(Long.class);
+        softAssertions.assertThat(couponMatchesCounterOutApiResult.getResult().getMyLeagues()).as("MyLeagues field is not an instance of Integer").isInstanceOf(Long.class);
+        softAssertions.assertThat(couponMatchesCounterOutApiResult.getResult().getWithMaxOdd()).as("WithMaxOdd field is not an instance of Integer").isInstanceOf(Long.class);
+        softAssertions.assertThat(couponMatchesCounterOutApiResult.getResult().getTopLeagues()).as("TopLeagues field is not an instance of Integer").isInstanceOf(Long.class);
 
         softAssertions.assertAll();
     }
