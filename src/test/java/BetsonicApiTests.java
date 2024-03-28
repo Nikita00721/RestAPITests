@@ -1,6 +1,7 @@
 import Generatot.model.CouponMatchesCounterOutApiResult;
 import Generatot.model.EventResultOutApiResult;
 import Generatot.model.StringStringDictionaryApiResult;
+import com.github.viclovsky.swagger.coverage.SwaggerCoverageRestAssured;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.qameta.allure.Description;
@@ -25,6 +26,7 @@ public class BetsonicApiTests {
     @Description("Receiving information about an event in the Highlights block and partially checking it")
     public void testHighlightsEvent() throws IOException{
         Response response = given()
+                .filter(new SwaggerCoverageRestAssured())
                 .queryParam("timezoneOffset", "-180")
                 .queryParam("langId", 8)
                 .queryParam("skinName", "betsonic")
@@ -58,6 +60,7 @@ public class BetsonicApiTests {
     @Description("Checking getting a list of live events")
     public void getLiveEventsTest() {
         Response response = given()
+                .filter(new SwaggerCoverageRestAssured())
                 .param("timezoneOffset", -180)
                 .param("langId", 8)
                 .param("skinName", "betsonic")
@@ -93,7 +96,7 @@ public class BetsonicApiTests {
         SoftAssertions softAssertions = new SoftAssertions();
         softAssertions.assertThat(eventResultOutApiResult.getResult().getItems().get(0).getId())
                 .as("Item id is incorrect")
-                .isEqualTo("66");
+                .isEqualTo(66L);
 
         softAssertions.assertAll();
     }
@@ -102,6 +105,7 @@ public class BetsonicApiTests {
     @Description("Test for opening a website with the correct language settings")
     public void verifyLanguageAndCultureTest() throws IOException{
         Response response = given()
+                .filter(new SwaggerCoverageRestAssured())
                 .queryParam("timezoneOffset", "-180")
                 .queryParam("langId", "8")
                 .queryParam("skinName", "betsonic")
@@ -140,6 +144,7 @@ public class BetsonicApiTests {
     @Description("Checking coupon values for not null values and type matching")
     public void verifyCouponsFieldsTest() {
         Response response = given()
+                .filter(new SwaggerCoverageRestAssured())
                 .queryParam("timezoneOffset", "-180")
                 .queryParam("langId", "8")
                 .queryParam("skinName", "betsonic")

@@ -1,6 +1,7 @@
 import BackofficeGenerator.model.BrandListItem;
 import BackofficeGenerator.model.BrandListItemListApiResult;
 import BackofficeGenerator.model.LicenseListItemListApiResult;
+import com.github.viclovsky.swagger.coverage.SwaggerCoverageRestAssured;
 import com.google.gson.Gson;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -38,6 +39,7 @@ public class BackofficeTests {
     public void UserPermissionsTest() {
         String requestBody = "{ \"LicensesIds\": [] }";
         Response response = given()
+                .filter(new SwaggerCoverageRestAssured())
                 .contentType("application/json")
                 .body(requestBody)
                 .cookies(cookies)
@@ -63,6 +65,7 @@ public class BackofficeTests {
     @Test
     public void getLicensesTest(){
         Response response = given()
+                .filter(new SwaggerCoverageRestAssured())
                 .cookies(cookies)
                 .when()
                 .get("/Api/HighlightsManager/GetLicenses")
@@ -125,6 +128,7 @@ public class BackofficeTests {
                 "]" +
                 "}";
         given()
+                .filter(new SwaggerCoverageRestAssured())
                 .contentType(ContentType.JSON)
                 .cookies(cookies)
                 .body(requestBody)
